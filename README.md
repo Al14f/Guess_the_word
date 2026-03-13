@@ -24,7 +24,7 @@ Segui questi passaggi per configurare il gioco in locale:
 
 2.  **Entra nella cartella del progetto:**
     ```bash
-    cd Guess_the_word
+    cd ~/percorso_cartella_Guess_the_word
     ```
 
 3.  **Installa le dipendenze:**
