@@ -19,7 +19,7 @@ Segui questi passaggi per configurare il gioco in locale:
 
 1.  **Clona il repository:**
     ```bash
-    git clone [https://github.com/Al14f/Guess_the_word](https://github.com/Al14f/Guess_the_word)
+    git clone https://github.com/Al14f/Guess_the_word
     ```
 
 2.  **Entra nella cartella del progetto:**
