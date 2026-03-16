@@ -66,11 +66,30 @@ def disegna_testo(testo, font, colore, y, x="center"):
     rect.y = y
     SCREEN.blit(surf, rect)
 
+# --- Nuove Funzioni per il Ritorno al Menu ---
+def ritorna_al_menu():
+    """Funzione per ritornare al menu principale e resettare le variabili di gioco"""
+    return "MENU_MODO", "", "", 0, "", [], "", 0, 0
+
+def disegna_hint_ritorno_menu(y, stato):
+    """Funzione per disegnare il messaggio di aiuto per tornare al menu"""
+    if stato == "MENU_DIFF":
+        disegna_testo("Premi ESC per tornare al menu principale", FONT_TEXT, GRAY, y)
+    elif stato == "GIOCO":
+        disegna_testo("Premi ESC per tornare al menu principale", FONT_TEXT, GRAY, y)
+
+def disegna_conferma_abbandono():
+    """Funzione per disegnare la schermata di conferma abbandono"""
+    disegna_testo("Sei sicuro di voler", FONT_TITLE, YELLOW, 220)
+    disegna_testo("abbandonare?", FONT_TITLE, YELLOW, 280)
+    disegna_testo("Premi 'S' per Si", FONT_TEXT, TEXT_COLOR, 380)
+    disegna_testo("Premi 'N' per No", FONT_TEXT, TEXT_COLOR, 430)
+
 # --- Ciclo Principale del Gioco ---
 def main():
     clock = pygame.time.Clock()
     
-    # Stati aggiunti: "MENU_CREDITI"
+    # Stati aggiunti: "MENU_CREDITI", "CONFERMA_ABBANDONO"
     stato = "MENU_MODO"
     modalita = ""
     difficolta = ""
@@ -81,6 +100,7 @@ def main():
     current_guess = ""
     start_time = 0
     messaggio_fine = ""
+    tempo_pausa = 0  # Per bloccare il timer durante la conferma
     
     view_start_row = 0 
     
@@ -131,7 +151,10 @@ def main():
                         stato = "MENU_MODO" # Torna indietro
                         
                 elif stato == "MENU_DIFF":
-                    if event.key in [pygame.K_f, pygame.K_m, pygame.K_d]:
+                    # Nuova funzionalità: Tasto ESC per tornare al menu principale
+                    if event.key == pygame.K_ESCAPE:
+                        stato, modalita, difficolta, limite, parola_segreta, tentativi_fatti, current_guess, start_time, view_start_row = ritorna_al_menu()
+                    elif event.key in [pygame.K_f, pygame.K_m, pygame.K_d]:
                         if event.key == pygame.K_f: difficolta = "F"
                         if event.key == pygame.K_m: difficolta = "M"
                         if event.key == pygame.K_d: difficolta = "D"
@@ -145,7 +168,11 @@ def main():
                         stato = "GIOCO"
                         
                 elif stato == "GIOCO":
-                    if event.key == pygame.K_UP:
+                    # Nuova funzionalità: Tasto ESC per aprire la conferma abbandono
+                    if event.key == pygame.K_ESCAPE:
+                        tempo_pausa = time.time()  # Salva il tempo quando si apre la conferma
+                        stato = "CONFERMA_ABBANDONO"
+                    elif event.key == pygame.K_UP:
                         view_start_row = max(0, view_start_row - 1)
                     elif event.key == pygame.K_DOWN:
                         view_start_row = min(max_view, view_start_row + 1)
@@ -182,6 +209,13 @@ def main():
                     elif event.key == pygame.K_DOWN:
                         view_start_row = min(max_view, view_start_row + 1)
 
+                elif stato == "CONFERMA_ABBANDONO":
+                    if event.key == pygame.K_s:  # Conferma abbandono
+                        stato, modalita, difficolta, limite, parola_segreta, tentativi_fatti, current_guess, start_time, view_start_row = ritorna_al_menu()
+                    elif event.key == pygame.K_n:  # Continua a giocare
+                        start_time += time.time() - tempo_pausa  # Recupera il tempo perso durante la pausa
+                        stato = "GIOCO"
+
         # --- Aggiornamento e Disegno ---
         if stato == "MENU_MODO":
             disegna_testo("GUESS THE WORD", FONT_TITLE, GREEN, 150)
@@ -209,6 +243,9 @@ def main():
             disegna_testo("Premi 'F' per Facile", FONT_TEXT, TEXT_COLOR, 350)
             disegna_testo("Premi 'M' per Media", FONT_TEXT, TEXT_COLOR, 400)
             disegna_testo("Premi 'D' per Difficile", FONT_TEXT, TEXT_COLOR, 450)
+            
+            # Nuovo: Messaggio per tornare al menu principale
+            disegna_hint_ritorno_menu(HEIGHT - 80, stato)
             
         elif stato == "GIOCO" or stato == "FINE":
             if stato == "GIOCO" and modalita == "tempo":
@@ -263,6 +300,13 @@ def main():
             if stato == "FINE":
                 disegna_testo(messaggio_fine, FONT_TEXT, YELLOW, 80)
                 disegna_testo("Premi SPAZIO per giocare di nuovo", FONT_TEXT, TEXT_COLOR, HEIGHT - 80)
+            else:
+                # Nuovo: Messaggio per tornare al menu principale durante il gioco
+                disegna_hint_ritorno_menu(HEIGHT - 80, stato)
+
+        elif stato == "CONFERMA_ABBANDONO":
+            # Nuova schermata di conferma abbandono
+            disegna_conferma_abbandono()
 
         pygame.display.flip()
         clock.tick(30) 
