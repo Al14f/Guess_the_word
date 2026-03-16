@@ -30,7 +30,7 @@ jobs:
           pip install pygame
 
       - name: Verify syntax
-        run: python -m py_compile main.py
+        run: python -m py_compile game.py
 
       - name: Test import
         run: python -c "import pygame; print('✓ Pygame OK')"

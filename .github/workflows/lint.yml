@@ -29,11 +29,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install pygame pylint flake8 mypy black isort
 
-      - name: Check syntax with Python
-        run: python -m py_compile main.py
+      - name: Check syntax
+        run: python -m py_compile game.py
 
       - name: Lint with flake8 (non-blocking)
-        run: flake8 main.py --count --exit-zero --max-line-length=127 || true
+        run: flake8 game.py --count --exit-zero --max-line-length=127 || true
 
       - name: Format check with black (non-blocking)
-        run: black --check main.py || true
+        run: black --check game.py || true
