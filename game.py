@@ -26,12 +26,23 @@ FONT_TITLE = pygame.font.SysFont("arial", 40, bold=True)
 FONT_TEXT = pygame.font.SysFont("arial", 24)
 FONT_BOX = pygame.font.SysFont("arial", 45, bold=True)
 
-# Vocabolario limitato
-VOCABOLARIO = ["GATTO", "TRENO", "PORTA", "SEDIA", "FIORE", "LUOGO", "NOTTE", "CARTA"]
-
 # --- Funzioni di Logica ---
-def scegli_parola(vocabolario):
-    return random.choice(vocabolario)
+def scegli_parola():
+    """Legge le parole da un file esterno e ne sceglie una casuale di 5 lettere."""
+    try:
+        with open("parole.txt", "r", encoding="utf-8") as file:
+            # Legge tutte le righe, toglie gli spazi e converte in maiuscolo
+            parole = [linea.strip().upper() for linea in file.readlines() if len(linea.strip()) == 5]
+        
+        if not parole:
+            # Se il file è vuoto o non ci sono parole da 5 lettere, usa una di backup
+            return "GATTO"
+            
+        return random.choice(parole)
+    except FileNotFoundError:
+        # Se il file non esiste, il gioco non crasha ma usa questa parola
+        print("Errore: File 'parole.txt' non trovato!")
+        return "TRENO"
 
 def valuta_tentativo_gui(tentativo, parola_segreta):
     colori = [GRAY] * len(parola_segreta)
@@ -160,7 +171,7 @@ def main():
                         if event.key == pygame.K_d: difficolta = "D"
                         
                         limite = imposta_difficolta(modalita, difficolta)
-                        parola_segreta = scegli_parola(VOCABOLARIO)
+                        parola_segreta = scegli_parola()
                         tentativi_fatti = []
                         current_guess = ""
                         start_time = time.time()
