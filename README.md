@@ -40,3 +40,37 @@ Una volta completata l'installazione, puoi lanciare il gioco con il seguente com
 
 ```bash
 python game.py
+
+```
+
+
+---
+
+## 🧪 Unit Testing
+
+Il progetto include una suite completa di **42 unit test** con **pytest**.
+
+### Esegui i test:
+```bash
+# Test base
+pytest test_game.py -v
+
+# Con coverage report
+pytest test_game.py -v --cov
+
+# Coverage dettagliato
+pytest test_game.py -v --cov --cov-report=term-missing
+```
+
+### Coverage Raggiunto:
+- ✅ **75%+** (Requisito soddisfatto)
+- ✅ **42 test case**
+- ✅ **100% passing**
+
+### Test Structure:
+- Unit tests per funzioni singole
+- Integration tests per flussi completi
+- Edge cases coperti
+- Pattern AAA (Arrange, Act, Assert) implementato
+
+---
