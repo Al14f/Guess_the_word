@@ -26,16 +26,29 @@ FONT_TITLE = pygame.font.SysFont("arial", 40, bold=True)
 FONT_TEXT = pygame.font.SysFont("arial", 24)
 
 # --- Funzioni di Logica ---
-def scegli_parola():
-    """Pesca una parola di qualsiasi lunghezza dal file."""
+def scegli_parola(difficolta):
+    """Pesca una parola dal file in base alla difficoltà."""
     try:
         with open("parole.txt", "r", encoding="utf-8") as file:
             parole = [linea.strip().upper() for linea in file if linea.strip()]
         
         if not parole:
             return "PYTHON"
+        
+        # Filtra le parole in base alla difficoltà
+        if difficolta == "F":  # Facile: max 5 lettere
+            parole_filtrate = [p for p in parole if len(p) <= 5]
+        elif difficolta == "M":  # Medio: 6-8 lettere
+            parole_filtrate = [p for p in parole if 6 <= len(p) <= 8]
+        elif difficolta == "D":  # Difficile: 9+ lettere
+            parole_filtrate = [p for p in parole if len(p) >= 9]
+        else:
+            parole_filtrate = parole
             
-        return random.choice(parole)
+        if not parole_filtrate:
+            return "PYTHON"
+            
+        return random.choice(parole_filtrate)
     except FileNotFoundError:
         return "GIOCO"
 
@@ -59,8 +72,8 @@ def valuta_tentativo_gui(tentativo, parola_segreta):
 
 def imposta_difficolta(modalita, difficolta):
     limiti = {
-        "tempo": {"F": 180, "M": 120, "D": 60},
-        "tentativi": {"F": 6, "M": 5, "D": 4}
+        "tempo": {"F": 300, "M": 275, "D": 250},
+        "tentativi": {"F": 20, "M": 15, "D": 10}
     }
     return limiti.get(modalita, {}).get(difficolta, 0)
 
@@ -109,7 +122,7 @@ def main():
         SCREEN.fill(BG_COLOR)
         
         # Gestione righe visualizzabili
-        righe_totali = limite if modalita == "tentativi" else 6
+        righe_totali = 6  # Sempre 6 righe visibili
         if stato == "GIOCO":
             max_view = max(0, len(tentativi_fatti) - righe_totali + 1)
         else:
@@ -137,7 +150,7 @@ def main():
                     elif event.key == pygame.K_c:
                         modalita, stato = "tentativi", "MENU_DIFF"
                 
-                elif stato == "MENU_CREDITI" and event.key == pygame.K_SPACE:
+                elif stato == "MENU_CREDITI" and event.key == pygame.K_ESCAPE:
                     stato = "MENU_MODO"
 
                 elif stato == "MENU_DIFF":
@@ -146,7 +159,7 @@ def main():
                     elif event.key in [pygame.K_f, pygame.K_m, pygame.K_d]:
                         difficolta = event.unicode.upper()
                         limite = imposta_difficolta(modalita, difficolta)
-                        parola_segreta = scegli_parola()
+                        parola_segreta = scegli_parola(difficolta)
                         tentativi_fatti, current_guess, view_start_row = [], "", 0
                         start_time, stato = time.time(), "GIOCO"
 
@@ -190,7 +203,7 @@ def main():
             disegna_testo("Developed by:", FONT_TITLE, YELLOW, 200)
             for i, name in enumerate(["Al14f", "CarmeloGit", "santolobianco-x", "Salv0Cosman0"]):
                 disegna_testo(name, FONT_TEXT, TEXT_COLOR, 300 + (i*50))
-            disegna_testo("Premi SPAZIO per tornare", FONT_TEXT, GRAY, HEIGHT - 100)
+            disegna_testo("Premi ESC per tornare", FONT_TEXT, GRAY, HEIGHT - 100)
 
         elif stato == "MENU_DIFF":
             disegna_testo("DIFFICOLTÀ", FONT_TITLE, YELLOW, 200)
