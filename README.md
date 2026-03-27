@@ -63,8 +63,9 @@ pytest test_game.py -v --cov --cov-report=term-missing
 ```
 
 ### Coverage Raggiunto:
-- ✅ **75%+** (Requisito soddisfatto)
-- ✅ **42 test case**
+- ✅ **89%** (Coverage complessivo)
+- ✅ **81%** (game.py)
+- ✅ **70 test case**
 - ✅ **100% passing**
 
 ### Test Structure:
@@ -72,5 +73,3 @@ pytest test_game.py -v --cov --cov-report=term-missing
 - Integration tests per flussi completi
 - Edge cases coperti
 - Pattern AAA (Arrange, Act, Assert) implementato
-
----
