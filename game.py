@@ -21,7 +21,6 @@ GRAY = (58, 58, 60)
 FONT_TITLE = pygame.font.SysFont("arial", 40, bold=True)
 FONT_TEXT = pygame.font.SysFont("arial", 24)
 
-
 def scegli_parola(difficolta):
     try:
         with open("parole.txt", "r", encoding="utf-8") as file:
@@ -46,7 +45,6 @@ def scegli_parola(difficolta):
     except FileNotFoundError:
         return "GIOCO"
 
-
 def valuta_tentativo_gui(tentativo, parola_segreta):
     colori = [GRAY] * len(parola_segreta)
     lettere_disponibili = list(parola_segreta)
@@ -63,14 +61,12 @@ def valuta_tentativo_gui(tentativo, parola_segreta):
 
     return colori
 
-
 def imposta_difficolta(modalita, difficolta):
     limiti = {
         "tempo": {"F": 300, "M": 275, "D": 250},
         "tentativi": {"F": 20, "M": 15, "D": 10},
     }
     return limiti.get(modalita, {}).get(difficolta, 0)
-
 
 def gestisci_tentativo(tentativo, parola_segreta, modalita, limite, tentativi_fatti):
     if len(tentativo) == len(parola_segreta):
@@ -84,7 +80,6 @@ def gestisci_tentativo(tentativo, parola_segreta, modalita, limite, tentativi_fa
         return "GIOCO", ""
     return "GIOCO", ""
 
-
 def calcola_tempo_rimasto(modalita, limite, start_time):
     if modalita == "tempo":
         tempo_rimasto = limite - (time.time() - start_time)
@@ -92,7 +87,6 @@ def calcola_tempo_rimasto(modalita, limite, start_time):
             return "FINE", "TEMPO SCADUTO! Era: PAROLA"
         return "GIOCO", int(tempo_rimasto)
     return "GIOCO", 0
-
 
 def calcola_dimensioni_griglia(parola_segreta):
     num_l = len(parola_segreta)
@@ -103,7 +97,6 @@ def calcola_dimensioni_griglia(parola_segreta):
     start_y = 150
     return num_l, margin, box_size, start_x, start_y
 
-
 def calcola_righe_visualizzabili(stato, tentativi_fatti):
     righe_totali = 6
     if stato == "GIOCO":
@@ -112,10 +105,8 @@ def calcola_righe_visualizzabili(stato, tentativi_fatti):
         max_view = max(0, len(tentativi_fatti) - righe_totali)
     return righe_totali, max_view
 
-
 def valida_input_carattere(event):
     return event.unicode.isalpha()
-
 
 def disegna_testo(testo, font, colore, y, x="center"):
     surf = font.render(testo, True, colore)
@@ -127,18 +118,15 @@ def disegna_testo(testo, font, colore, y, x="center"):
     rect.y = y
     SCREEN.blit(surf, rect)
 
-
 def disegna_hint_ritorno_menu(y, stato):
     if stato in ["MENU_DIFF", "GIOCO"]:
         disegna_testo("Premi ESC per tornare al menu principale", FONT_TEXT, GRAY, y)
-
 
 def disegna_conferma_abbandono():
     disegna_testo("Sei sicuro di voler", FONT_TITLE, YELLOW, 220)
     disegna_testo("abbandonare?", FONT_TITLE, YELLOW, 280)
     disegna_testo("Premi 'S' per Si", FONT_TEXT, TEXT_COLOR, 380)
     disegna_testo("Premi 'N' per No", FONT_TEXT, TEXT_COLOR, 430)
-
 
 def disegna_griglia_gioco(game_state):
     parola_segreta = game_state["parola_segreta"]
@@ -174,7 +162,6 @@ def disegna_griglia_gioco(game_state):
             else:
                 pygame.draw.rect(SCREEN, BOX_BORDER, rect, 2)
 
-
 def disegna_gioco_state(game_state):
     if game_state["modalita"] == "tempo":
         tempo_rimasto = game_state["limite"] - (time.time() - game_state["start_time"])
@@ -200,7 +187,6 @@ def disegna_gioco_state(game_state):
         )
     else:
         disegna_hint_ritorno_menu(HEIGHT - 80, "GIOCO")
-
 
 def disegna_schermo(game_state, credits_button_rect):
     SCREEN.fill(BG_COLOR)
@@ -232,7 +218,6 @@ def disegna_schermo(game_state, credits_button_rect):
 
     pygame.display.flip()
 
-
 def inizializza_stato():
     return {
         "stato": "MENU_MODO",
@@ -248,7 +233,6 @@ def inizializza_stato():
         "view_start_row": 0,
     }
 
-
 def reset_game_state(game_state):
     game_state["stato"] = "MENU_MODO"
     game_state["modalita"] = ""
@@ -260,7 +244,6 @@ def reset_game_state(game_state):
     game_state["start_time"] = 0
     game_state["messaggio_fine"] = ""
     game_state["view_start_row"] = 0
-
 
 def processa_evento_menu_modo(event, game_state, credits_button_rect):
     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -275,11 +258,9 @@ def processa_evento_menu_modo(event, game_state, credits_button_rect):
             game_state["stato"] = "MENU_DIFF"
             game_state["modalita"] = "tentativi"
 
-
 def processa_evento_menu_crediti(event, game_state):
     if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
         game_state["stato"] = "MENU_MODO"
-
 
 def processa_evento_menu_diff(event, game_state):
     if event.type == pygame.KEYDOWN:
@@ -298,17 +279,38 @@ def processa_evento_menu_diff(event, game_state):
             game_state["start_time"] = time.time()
             game_state["stato"] = "GIOCO"
 
+def gestisci_scroll(event, game_state):
+    righe_totali = 6
+    max_view = max(0, len(game_state["tentativi_fatti"]) - righe_totali + 1)
+    if event.y > 0:
+        game_state["view_start_row"] = max(0, game_state["view_start_row"] - 1)
+    elif event.y < 0:
+        game_state["view_start_row"] = min(max_view, game_state["view_start_row"] + 1)
+
+def conferma_parola(game_state):
+    if len(game_state["current_guess"]) == len(game_state["parola_segreta"]):
+        colori = valuta_tentativo_gui(
+            game_state["current_guess"], game_state["parola_segreta"]
+        )
+        game_state["tentativi_fatti"].append((game_state["current_guess"], colori))
+        righe_totali = 6
+        max_view = max(0, len(game_state["tentativi_fatti"]) - righe_totali + 1)
+        game_state["view_start_row"] = max_view
+
+        if game_state["current_guess"] == game_state["parola_segreta"]:
+            game_state["messaggio_fine"] = "COMPLIMENTI!"
+            game_state["stato"] = "FINE"
+        elif (
+            game_state["modalita"] == "tentativi"
+            and len(game_state["tentativi_fatti"]) >= game_state["limite"]
+        ):
+            game_state["messaggio_fine"] = f"PAROLA: {game_state['parola_segreta']}"
+            game_state["stato"] = "FINE"
+        game_state["current_guess"] = ""
 
 def processa_evento_gioco(event, game_state):
     if event.type == pygame.MOUSEWHEEL:
-        righe_totali = 6
-        max_view = max(0, len(game_state["tentativi_fatti"]) - righe_totali + 1)
-        if event.y > 0:
-            game_state["view_start_row"] = max(0, game_state["view_start_row"] - 1)
-        elif event.y < 0:
-            game_state["view_start_row"] = min(
-                max_view, game_state["view_start_row"] + 1
-            )
+        gestisci_scroll(event, game_state)
 
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_ESCAPE:
@@ -317,29 +319,7 @@ def processa_evento_gioco(event, game_state):
         elif event.key == pygame.K_BACKSPACE:
             game_state["current_guess"] = game_state["current_guess"][:-1]
         elif event.key == pygame.K_RETURN:
-            if len(game_state["current_guess"]) == len(game_state["parola_segreta"]):
-                colori = valuta_tentativo_gui(
-                    game_state["current_guess"], game_state["parola_segreta"]
-                )
-                game_state["tentativi_fatti"].append(
-                    (game_state["current_guess"], colori)
-                )
-                righe_totali = 6
-                max_view = max(0, len(game_state["tentativi_fatti"]) - righe_totali + 1)
-                game_state["view_start_row"] = max_view
-
-                if game_state["current_guess"] == game_state["parola_segreta"]:
-                    game_state["messaggio_fine"] = "COMPLIMENTI!"
-                    game_state["stato"] = "FINE"
-                elif (
-                    game_state["modalita"] == "tentativi"
-                    and len(game_state["tentativi_fatti"]) >= game_state["limite"]
-                ):
-                    game_state["messaggio_fine"] = (
-                        f"PAROLA: {game_state['parola_segreta']}"
-                    )
-                    game_state["stato"] = "FINE"
-                game_state["current_guess"] = ""
+            conferma_parola(game_state)
         elif event.unicode.isalpha() and len(game_state["current_guess"]) < len(
             game_state["parola_segreta"]
         ):
@@ -350,15 +330,11 @@ def processa_evento_gioco(event, game_state):
         and time.time() - game_state["start_time"] >= game_state["limite"]
     ):
         game_state["stato"] = "FINE"
-        game_state["messaggio_fine"] = (
-            f"TEMPO SCADUTO! Era: {game_state['parola_segreta']}"
-        )
-
+        game_state["messaggio_fine"] = f"TEMPO SCADUTO! Era: {game_state['parola_segreta']}"
 
 def processa_evento_fine(event, game_state):
     if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
         reset_game_state(game_state)
-
 
 def processa_evento_conferma_abbandono(event, game_state):
     if event.type == pygame.KEYDOWN:
@@ -367,7 +343,6 @@ def processa_evento_conferma_abbandono(event, game_state):
         elif event.key == pygame.K_n:
             game_state["stato"] = "GIOCO"
             game_state["start_time"] += time.time() - game_state["tempo_pausa"]
-
 
 def processa_evento(event, game_state, credits_button_rect):
     if event.type == pygame.QUIT:
@@ -388,7 +363,6 @@ def processa_evento(event, game_state, credits_button_rect):
 
     return True
 
-
 def game_loop(clock):
     game_state = inizializza_stato()
     credits_button_rect = pygame.Rect(WIDTH // 2 - 100, 450, 200, 50)
@@ -402,13 +376,12 @@ def game_loop(clock):
         disegna_schermo(game_state, credits_button_rect)
         clock.tick(30)
 
-
 def main():
     clock = pygame.time.Clock()
     game_loop(clock)
     pygame.quit()
     sys.exit()
 
-
 if __name__ == "__main__":
     main()
+    
