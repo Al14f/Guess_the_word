@@ -4,17 +4,35 @@ from unittest.mock import Mock, patch
 import pygame
 import pytest
 
-from game import (GRAY, GREEN, YELLOW, calcola_dimensioni_griglia,
-                  calcola_righe_visualizzabili, calcola_tempo_rimasto,
-                  conferma_parola, disegna_conferma_abbandono,
-                  disegna_gioco_state, disegna_hint_ritorno_menu,
-                  disegna_schermo, disegna_testo, gestisci_scroll,
-                  gestisci_tentativo, imposta_difficolta, inizializza_stato,
-                  processa_evento, processa_evento_conferma_abbandono,
-                  processa_evento_fine, processa_evento_gioco,
-                  processa_evento_menu_crediti, processa_evento_menu_diff,
-                  processa_evento_menu_modo, reset_game_state, scegli_parola,
-                  valida_input_carattere, valuta_tentativo_gui)
+from game import (
+    GRAY,
+    GREEN,
+    YELLOW,
+    calcola_dimensioni_griglia,
+    calcola_righe_visualizzabili,
+    calcola_tempo_rimasto,
+    conferma_parola,
+    disegna_conferma_abbandono,
+    disegna_gioco_state,
+    disegna_hint_ritorno_menu,
+    disegna_schermo,
+    disegna_testo,
+    gestisci_scroll,
+    gestisci_tentativo,
+    imposta_difficolta,
+    inizializza_stato,
+    processa_evento,
+    processa_evento_conferma_abbandono,
+    processa_evento_fine,
+    processa_evento_gioco,
+    processa_evento_menu_crediti,
+    processa_evento_menu_diff,
+    processa_evento_menu_modo,
+    reset_game_state,
+    scegli_parola,
+    valida_input_carattere,
+    valuta_tentativo_gui,
+)
 
 
 # ============== SCEGLI_PAROLA ==============
