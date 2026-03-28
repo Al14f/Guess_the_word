@@ -361,22 +361,27 @@ def test_conferma_parola_sconfitta():
 
 @patch("game.gestisci_scroll")
 def test_evento_gioco_scroll(m):
-    g = {"stato": "GIOCO"}
+    # Inizializziamo con lo stato completo per evitare KeyError
+    g = inizializza_stato()
+    g["stato"] = "GIOCO"
+    g["tentativi_fatti"] = [("T", [GREEN])] * 10
+    
     e = Mock(type=pygame.MOUSEWHEEL)
     processa_evento_gioco(e, g)
     assert m.called
 
 @patch("game.conferma_parola")
 def test_evento_gioco_enter(m):
-    g = {
-        "stato": "GIOCO",
-        "current_guess": "HELLO",
-        "parola_segreta": "HELLO",
-    }
+    # Inizializziamo con lo stato completo per evitare KeyError
+    g = inizializza_stato()
+    g["stato"] = "GIOCO"
+    g["current_guess"] = "HELLO"
+    g["parola_segreta"] = "HELLO"
+    
     e = Mock(type=pygame.KEYDOWN, key=pygame.K_RETURN)
     processa_evento_gioco(e, g)
     assert m.called
-
+    
 def test_evento_gioco_esc():
     g = {
         "stato": "GIOCO",
