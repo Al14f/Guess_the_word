@@ -8,7 +8,7 @@ Un divertente gioco di parole sviluppato in **Python** con la libreria **Pygame*
 
 Assicurati di avere installato i seguenti strumenti sul tuo sistema:
 
-* **Python 3.13.11**
+* **Python 3.10+**
 * **Git** (per clonare il repository)
 
 ---
@@ -48,7 +48,7 @@ python game.py
 
 ## 🧪 Unit Testing
 
-Il progetto include una suite completa di **42 unit test** con **pytest**.
+Il progetto include una suite completa di **72 unit test** con **pytest**.
 
 ### Esegui i test:
 ```bash
@@ -65,7 +65,7 @@ pytest test_game.py -v --cov --cov-report=term-missing
 ### Coverage Raggiunto:
 - ✅ **89%** (Coverage complessivo)
 - ✅ **81%** (game.py)
-- ✅ **70 test case**
+- ✅ **72 test case**
 - ✅ **100% passing**
 
 ### Test Structure:
